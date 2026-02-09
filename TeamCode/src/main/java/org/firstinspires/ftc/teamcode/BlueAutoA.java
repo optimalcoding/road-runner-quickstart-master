@@ -1,8 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+
+import com.qualcomm.hardware.dfrobot.HuskyLens;
+
+
+import java.util.ArrayList;
 
 @Autonomous(name = "BLUE_2_artifact_launch")
 public class BlueAutoA extends LinearOpMode {
@@ -14,7 +28,8 @@ public class BlueAutoA extends LinearOpMode {
     final double LAUNCHER_MIN_VELOCITY = 1075;
     final double STOP_SPEED = 0.0;
     final double FULL_SPEED = 1.0;
-
+    final double LAUNCHER_REVERSE = -1000;
+    final double FEEDER_REVERSE = 1000;
 
 
     @Override
@@ -75,11 +90,85 @@ public class BlueAutoA extends LinearOpMode {
 
             sleep(500);
 
-            rotate(0.4, 800);
+            straight(0.4,700);
 
             sleep(100);
 
-            straight(0.5,1000);
+            rotate(0.4, 1750);
+
+            sleep(100);
+
+            //rotate(0.4,500);
+
+            //sleep(100);
+
+            robot.intake.setVelocity(-LAUNCHER_TARGET_VELOCITY);
+
+            sleep(200);
+
+            robot.feeder.setVelocity(-FEEDER_TARGET_VELOCITY);
+
+            straight(0.5,1570);
+
+            sleep(100);
+
+            robot.feeder.setVelocity(STOP_SPEED);
+
+            sleep(100);
+
+            robot.intake.setVelocity(STOP_SPEED);
+
+            sleep(100);
+
+            straight(-0.5,  1800);
+
+            sleep(100);
+
+            rotate(-0.4,1750);
+
+            sleep(100);
+
+            straight(-0.4,1000);
+
+            sleep(100);
+
+            rotate(-0.4, 200);
+
+            sleep(100);
+
+            robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+
+            sleep(1500);
+
+            robot.feeder.setVelocity(-FEEDER_TARGET_VELOCITY);
+
+            sleep(50);
+
+            robot.feeder.setVelocity(STOP_SPEED);
+
+            sleep(500);
+
+            robot.intake.setVelocity(-LAUNCHER_TARGET_VELOCITY);
+
+            sleep(200);
+
+            robot.feeder.setVelocity(-FEEDER_TARGET_VELOCITY);
+
+            sleep(2500);
+
+            robot.launcher.setVelocity(STOP_SPEED);
+
+            sleep(100);
+
+            robot.intake.setVelocity(STOP_SPEED);
+
+            sleep(500);
+
+            robot.feeder.setVelocity(STOP_SPEED);
+
+            sleep(100);
+
+            strafeRight(0.4,1000);
 
             sleep(24000);
 
@@ -133,6 +222,14 @@ public class BlueAutoA extends LinearOpMode {
         robot.backLeft.setPower(0);
         robot.frontRight.setPower(0);
         robot.backRight.setPower(0);
+    }
+
+    void Reverse(int milliseconds) {
+        robot.launcher.setVelocity(LAUNCHER_REVERSE);
+        robot.feeder.setVelocity(FEEDER_REVERSE);
+        sleep(milliseconds);
+        robot.launcher.setVelocity(STOP_SPEED);
+        robot.feeder.setVelocity(STOP_SPEED);
     }
 
 }
