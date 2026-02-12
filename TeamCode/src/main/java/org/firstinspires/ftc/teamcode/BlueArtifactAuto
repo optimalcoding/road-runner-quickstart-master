@@ -1,0 +1,109 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+@Autonomous(name = "RoadRunner_9Ball_Master")
+public class BlueArtifactAuto extends LinearOpMode {
+
+    // Initialize Subsystems
+    Robot robot = new Robot();
+
+    // Constants from your BlueAutoA
+    final double LAUNCHER_VEL = 1250;
+    final double FEEDER_VEL = -5000;
+    final double INTAKE_VEL = -1250;
+
+    // --- Subsystem Actions (Encapsulating BlueAutoA logic) ---
+    public Action setLauncher(double vel) { return packet -> { robot.launcher.setVelocity(vel); return false; }; }
+    public Action setFeeder(double vel) { return packet -> { robot.feeder.setVelocity(vel); return false; }; }
+    public Action setIntake(double vel) { return packet -> { robot.intake.setVelocity(vel); return false; }; }
+
+    // Optimized Launch Routine
+    public Action launchRoutine() {
+        return new SequentialAction(
+                setLauncher(LAUNCHER_VEL),
+                new SleepAction(1.2), // Wait for 6k RPM motor to stabilize
+                setFeeder(FEEDER_VEL),
+                new SleepAction(0.05),
+                setFeeder(0),
+                new SleepAction(0.5),
+                setIntake(INTAKE_VEL),
+                new SleepAction(0.2),
+                setFeeder(FEEDER_VEL),
+                new SleepAction(1.5),
+                setLauncher(0), setIntake(0), setFeeder(0)
+        );
+    }
+
+    @Override
+    public void runOpMode() {
+        robot.init(hardwareMap);
+
+        // Start Pose based on your MeepMeep (-52, -53, 45 degrees)
+        Pose2d startPose = new Pose2d(-52, -53, Math.toRadians(45));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+
+        // Define specific locations from your MeepMeep/Pedro logic
+        Vector2d launchSpot = new Vector2d(-10, -10);
+        Vector2d pickup1 = new Vector2d(-30, -30);
+        Vector2d pickup2 = new Vector2d(12, -25);
+
+        waitForStart();
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        // 1. DRIVE TO LAUNCH SPOT
+                        drive.actionBuilder(startPose)
+                                .strafeTo(new Vector2d(-33,-25))
+                                .build(),
+
+                        // 2. FIRST LAUNCH
+                        launchRoutine(),
+
+                        drive.actionBuilder(new Pose2d(-33,-25,Math.toRadians(-90)))
+                                .strafeToLinearHeading(new Vector2d(-10,-10),Math.toRadians(-90))
+                                .build(),
+
+                        // 3. DRIVE TO PICKUP 1 WHILE PRE-SPINNING INTAKE
+                        new ParallelAction(
+                                setIntake(INTAKE_VEL),
+                                drive.actionBuilder(new Pose2d(launchSpot, Math.toRadians(-90)))
+                                        .strafeToLinearHeading(new Vector2d(-30,-30), Math.toRadians(45))
+                                        .build()
+                        ),
+
+                        // 4. RETURN TO LAUNCH SPOT
+                        drive.actionBuilder(new Pose2d(pickup1, Math.toRadians(45)))
+                                .strafeToLinearHeading(new Vector2d(-10,-10), Math.toRadians(-90))
+                                .build(),
+
+                        // 5. SECOND LAUNCH
+                        launchRoutine(),
+
+                        // 6. DRIVE TO PICKUP 2
+                        new ParallelAction(
+                                setIntake(INTAKE_VEL),
+                                drive.actionBuilder(new Pose2d(launchSpot, Math.toRadians(-90)))
+                                        .strafeToLinearHeading(new Vector2d(12,-25), Math.toRadians(-90))
+                                        .build()
+                        ),
+
+                        // 7. RETURN TO LAUNCH SPOT
+                        drive.actionBuilder(new Pose2d(pickup2, Math.toRadians(-90)))
+                                .strafeToLinearHeading(new Vector2d(-10,-10), Math.toRadians(-90))
+                                .build(),
+
+                        // 8. FINAL LAUNCH
+                        launchRoutine()
+                )
+        );
+    }
+}
