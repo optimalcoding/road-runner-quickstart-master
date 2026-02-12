@@ -71,16 +71,18 @@ public class BlueArtifactAuto extends LinearOpMode {
                         drive.actionBuilder(new Pose2d(-33,-25,Math.toRadians(-90)))
                                 .strafeToLinearHeading(new Vector2d(-10,-10),Math.toRadians(-90))
                                 .build(),
-                        
+
 
                         // 4. RETURN TO LAUNCH SPOT
                         new ParallelAction(
-                                setIntake(INTAKE_VEL),
-                                drive.actionBuilder(new Pose2d(-10,-10, Math.toRadians(45)))
-
-                                .strafeToLinearHeading(new Vector2d(-10,-53), Math.toRadians(-90))
-                                .build()
-                                ),
+                                setIntake(INTAKE_VEL), // Starts intake immediately
+                                new SequentialAction(
+                                        drive.actionBuilder(new Pose2d(-10, -10, Math.toRadians(45)))
+                                                .strafeToLinearHeading(new Vector2d(-10, -53), Math.toRadians(-90))
+                                                .build(),
+                                        setIntake(0) // Shuts off intake the millisecond the drive finishes
+                                )
+                        ),
 
                         // 5. SECOND LAUNCH
                         launchRoutine(),
