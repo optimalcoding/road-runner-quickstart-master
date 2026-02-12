@@ -73,17 +73,20 @@ public class BlueArtifactAuto extends LinearOpMode {
                                 .build(),
 
                         // 3. DRIVE TO PICKUP 1 WHILE PRE-SPINNING INTAKE
-                        new ParallelAction(
-                                setIntake(INTAKE_VEL),
+                        
                                 drive.actionBuilder(new Pose2d(-10,-10, Math.toRadians(-90)))
                                         .strafeToLinearHeading(new Vector2d(-10,-10), Math.toRadians(45))
-                                        .build()
-                        ),
+                                        .build(),
+                        
 
                         // 4. RETURN TO LAUNCH SPOT
-                        drive.actionBuilder(new Pose2d(-10,-10, Math.toRadians(45)))
+                        new ParallelAction(
+                                setIntake(INTAKE_VEL),
+                                drive.actionBuilder(new Pose2d(-10,-10, Math.toRadians(45)))
+                                
                                 .strafeToLinearHeading(new Vector2d(-10,-53), Math.toRadians(-90))
-                                .build(),
+                                .build()
+                                ),
 
                         // 5. SECOND LAUNCH
                         launchRoutine(),
