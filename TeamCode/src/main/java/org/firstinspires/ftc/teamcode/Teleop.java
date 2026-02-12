@@ -22,7 +22,12 @@ public class Teleop extends LinearOpMode {
 
 
 
-    final double LAUNCHER_TARGET_VELOCITY = 1400;
+    double LAUNCHER_TARGET_VELOCITY = 1400;
+
+    final double LAUNCHER_2ND = 1675;
+
+    final double LAUNCHER_MIN_VELOCITY = 1400;
+
     final double FEEDER_TARGET_VELOCITY = 5000;
     final double FEEDER_MIN_VELOCITY = 750;
     final double LAUNCHER_REVERSE = -1000;
@@ -155,6 +160,13 @@ public class Teleop extends LinearOpMode {
             else if (gamepad1.dpad_down) {
                 robot.turret.setPosition(0.2);//lowers hood
 
+            }
+
+            if (gamepad1.a){
+                LAUNCHER_TARGET_VELOCITY = LAUNCHER_2ND;
+            }
+            if (gamepad1.b){
+                LAUNCHER_TARGET_VELOCITY = LAUNCHER_MIN_VELOCITY;
             }
 
 
