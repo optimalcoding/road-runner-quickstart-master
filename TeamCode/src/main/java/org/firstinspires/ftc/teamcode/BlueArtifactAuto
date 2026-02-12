@@ -9,6 +9,9 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 
 @Autonomous(name = "RoadRunner_9Ball_Master")
 public class BlueArtifactAuto extends LinearOpMode {
@@ -22,9 +25,26 @@ public class BlueArtifactAuto extends LinearOpMode {
     final double INTAKE_VEL = -1250;
 
     // --- Subsystem Actions (Encapsulating BlueAutoA logic) ---
-    public Action setLauncher(double vel) { return packet -> { robot.launcher.setVelocity(vel); return false; }; }
-    public Action setFeeder(double vel) { return packet -> { robot.feeder.setVelocity(vel); return false; }; }
-    public Action setIntake(double vel) { return packet -> { robot.intake.setVelocity(vel); return false; }; }
+    public Action setLauncher(double vel) {
+        return packet -> {
+            robot.launcher.setVelocity(vel);
+            return false;
+        };
+    }
+
+    public Action setFeeder(double vel) {
+        return packet -> {
+            robot.feeder.setVelocity(vel);
+            return false;
+        };
+    }
+
+    public Action setIntake(double vel) {
+        return packet -> {
+            robot.intake.setVelocity(vel);
+            return false;
+        };
+    }
 
     // Optimized Launch Routine
     public Action launchRoutine() {
@@ -58,51 +78,54 @@ public class BlueArtifactAuto extends LinearOpMode {
 
         waitForStart();
 
-        Actions.runBlocking(
-                new SequentialAction(
-                        // 1. DRIVE TO LAUNCH SPOT
-                        drive.actionBuilder(startPose)
-                                .strafeTo(new Vector2d(-33,-25))
-                                .build(),
-
-                        // 2. FIRST LAUNCH
-                        launchRoutine(),
-
-                        drive.actionBuilder(new Pose2d(-33,-25,Math.toRadians(-90)))
-                                .strafeToLinearHeading(new Vector2d(-10,-10),Math.toRadians(-90))
-                                .build(),
+            Actions.runBlocking(
+                    new SequentialAction(
+                            // 1. DRIVE TO LAUNCH SPOT
+                            drive.actionBuilder(drive.new (Pose2d(-52, -53, Math.toRadians(45))))
+                                    .strafeTo(new Vector2d(-29, -30))
 
 
-                        // 4. RETURN TO LAUNCH SPOT
-                        new ParallelAction(
-                                setIntake(INTAKE_VEL), // Starts intake immediately
-                                new SequentialAction(
-                                        drive.actionBuilder(new Pose2d(-10, -10, Math.toRadians(45)))
-                                                .strafeToLinearHeading(new Vector2d(-10, -53), Math.toRadians(-90))
-                                                .build(),
-                                        setIntake(0) // Shuts off intake the millisecond the drive finishes
-                                )
-                        ),
+                                    .build(),
 
-                        // 5. SECOND LAUNCH
-                        launchRoutine(),
+                            // 2. FIRST LAUNCH
+                            //launchRoutine(),
 
-                        // 6. DRIVE TO PICKUP 2
-                        new ParallelAction(
-                                setIntake(INTAKE_VEL),
-                                drive.actionBuilder(new Pose2d(-33,-25, Math.toRadians(-90)))
-                                        .strafeToLinearHeading(new Vector2d(12,-25), Math.toRadians(-90))
-                                        .build()
-                        ),
+                            drive.actionBuilder(new Pose2d(-29, -30, Math.toRadians(-90)))
+                                    .strafeToLinearHeading(new Vector2d(-10, -10), Math.toRadians(-90))
+                                    .build(),
 
-                        // 7. RETURN TO LAUNCH SPOT
-                        drive.actionBuilder(new Pose2d(pickup2, Math.toRadians(-90)))
-                                .strafeToLinearHeading(new Vector2d(-10,-10), Math.toRadians(-90))
-                                .build(),
 
-                        // 8. FINAL LAUNCH
-                        launchRoutine()
-                )
-        );
+                            // 4. RETURN TO LAUNCH SPOT
+                            new ParallelAction(
+                                    //setIntake(INTAKE_VEL), // Starts intake immediately
+                                    new SequentialAction(
+                                            drive.actionBuilder(new Pose2d(-10, -10, Math.toRadians(45)))
+                                                    .strafeToLinearHeading(new Vector2d(-10, -53), Math.toRadians(-90))
+                                                    .build()
+                                            //setIntake(0) // Shuts off intake the millisecond the drive finishes
+                                    )
+                            ),
+
+                            // 5. SECOND LAUNCH
+                            //launchRoutine(),
+
+                            // 6. DRIVE TO PICKUP 2
+                            new ParallelAction(
+                                    setIntake(INTAKE_VEL),
+                                    drive.actionBuilder(new Pose2d(-29, -30, Math.toRadians(-90)))
+                                            .strafeToLinearHeading(new Vector2d(12, -25), Math.toRadians(-90))
+                                            .build()
+                            ),
+
+                            // 7. RETURN TO LAUNCH SPOT
+                            drive.actionBuilder(new Pose2d(pickup2, Math.toRadians(-90)))
+                                    .strafeToLinearHeading(new Vector2d(-10, -10), Math.toRadians(-90))
+                                    .build()
+
+                            // 8. FINAL LAUNCH
+                            //launchRoutine()
+
+                    )
+            );
+        }
     }
-}
