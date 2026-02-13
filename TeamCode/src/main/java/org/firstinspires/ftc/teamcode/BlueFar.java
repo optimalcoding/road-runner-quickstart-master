@@ -91,7 +91,7 @@ public class BlueFar extends LinearOpMode {
 
 
         // Start Pose based on your MeepMeep (-52, -53, 45 degrees)
-        Pose2d startPose = new Pose2d(60, 19, Math.toRadians(45));
+        Pose2d startPose = new Pose2d(62, 19, Math.toRadians(15));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
        /* TrajectoryActionBuilder move1 = drive.actionBuilder(startPose)
@@ -117,21 +117,22 @@ public class BlueFar extends LinearOpMode {
 
                         // --- CYCLE 2: PICKUP 1 (With Stopper) ---
                         // 1. Move quickly to the "Stopper" (2 inches away from ball)
-                        .strafeToLinearHeading(new Vector2d(35, 19), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(29, 12), Math.toRadians(90))
 
                         // 2. Start intake and crawl the last 2 inches to the ball
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(35, 47), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(29, 50), Math.toRadians(90))
+
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Return to Launch Spot
 
-                        .strafeToLinearHeading(new Vector2d(58, 19), Math.toRadians(45))
+                        .strafeToLinearHeading(new Vector2d(58, 19), Math.toRadians(25))
                         .stopAndAdd(launchRoutine())
 
                         // --- CYCLE 3: PICKUP 2 (With Stopper) ---
                         // 1. Approach the diagonal artifacts (The "Stopper" point)
-                        .strafeToLinearHeading(new Vector2d(38, 19), Math.toRadians(45))
+                        .strafeToLinearHeading(new Vector2d(32, 19), Math.toRadians(45))
                         .stopAndAdd(setTurret(TURRET_MIN))
 
 
