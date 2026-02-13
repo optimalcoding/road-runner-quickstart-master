@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.PathBuilder;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -9,13 +10,42 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-
-@Autonomous(name = "RoadRunner_9Ball_Master")
+@Config
+@Autonomous(name = "RoadRunner_9Ball_Master", group = "Autonomous")
 public class BlueArtifactAuto extends LinearOpMode {
 
+  /*  public class launcher {
+        private DcMotorEx launcher;
+        public launcher(HardwareMap hardwareMap) {
+            launcher = hardwareMap.get(DcMotorEx.class, "launcher");
+            launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+    }
+
+    public class feeder {
+        private DcMotorEx feeder;
+        public feeder(HardwareMap hardwareMap){
+            feeder = hardwareMap.get(DcMotorEx.class,"feeder");
+            feeder.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+        }
+    }
+
+    public class intake {
+        private DcMotorEx intake;
+        public intake(HardwareMap hardwareMap){
+            intake = hardwareMap.get(DcMotorEx.class,"intake");
+            intake.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+        }
+    }
+*/
     // Initialize Subsystems
     Robot robot = new Robot();
 
@@ -25,26 +55,9 @@ public class BlueArtifactAuto extends LinearOpMode {
     final double INTAKE_VEL = -1250;
 
     // --- Subsystem Actions (Encapsulating BlueAutoA logic) ---
-    public Action setLauncher(double vel) {
-        return packet -> {
-            robot.launcher.setVelocity(vel);
-            return false;
-        };
-    }
-
-    public Action setFeeder(double vel) {
-        return packet -> {
-            robot.feeder.setVelocity(vel);
-            return false;
-        };
-    }
-
-    public Action setIntake(double vel) {
-        return packet -> {
-            robot.intake.setVelocity(vel);
-            return false;
-        };
-    }
+    public Action setLauncher(double vel) { return packet -> { robot.launcher.setVelocity(vel); return false; }; }
+    public Action setFeeder(double vel) { return packet -> { robot.feeder.setVelocity(vel); return false; }; }
+    public Action setIntake(double vel) { return packet -> { robot.intake.setVelocity(vel); return false; }; }
 
     // Optimized Launch Routine
     public Action launchRoutine() {
@@ -59,7 +72,7 @@ public class BlueArtifactAuto extends LinearOpMode {
                 new SleepAction(0.2),
                 setFeeder(FEEDER_VEL),
                 new SleepAction(1.5),
-                setLauncher(0), setIntake(0), setFeeder(0)
+                new ParallelAction(setLauncher(0), setIntake(0), setFeeder(0))
         );
     }
 
@@ -71,61 +84,45 @@ public class BlueArtifactAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-52, -53, Math.toRadians(45));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
-        // Define specific locations from your MeepMeep/Pedro logic
-        Vector2d launchSpot = new Vector2d(-10, -10);
-        Vector2d pickup1 = new Vector2d(-30, -30);
-        Vector2d pickup2 = new Vector2d(12, -25);
 
         waitForStart();
 
-            Actions.runBlocking(
-                    new SequentialAction(
-                            // 1. DRIVE TO LAUNCH SPOT
-                            drive.actionBuilder(drive.new (Pose2d(-52, -53, Math.toRadians(45))))
-                                    .strafeTo(new Vector2d(-29, -30))
+        Actions.runBlocking(
+                drive.actionBuilder(startPose)
+                        // --- CYCLE 1: PRELOADS ---
+                        .strafeTo(new Vector2d(-33, -33))
+                        .stopAndAdd(launchRoutine())
 
+                        // --- CYCLE 2: PICKUP 1 (With Stopper) ---
+                        // 1. Move quickly to the "Stopper" (2 inches away from ball)
+                        .strafeToLinearHeading(new Vector2d(-12, -12), Math.toRadians(-90))
 
-                                    .build(),
+                        // 2. Start intake and crawl the last 2 inches to the ball
+                        .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
+                        .lineToY(-49)
+                        .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
-                            // 2. FIRST LAUNCH
-                            //launchRoutine(),
+                        // 3. Return to Launch Spot
 
-                            drive.actionBuilder(new Pose2d(-29, -30, Math.toRadians(-90)))
-                                    .strafeToLinearHeading(new Vector2d(-10, -10), Math.toRadians(-90))
-                                    .build(),
+                        .strafeToLinearHeading(new Vector2d(-33, -33), Math.toRadians(45))
+                        .stopAndAdd(launchRoutine())
 
+                        // --- CYCLE 3: PICKUP 2 (With Stopper) ---
+                        // 1. Approach the diagonal artifacts (The "Stopper" point)
+                        .strafeToLinearHeading(new Vector2d(12, -20), Math.toRadians(-90))
 
-                            // 4. RETURN TO LAUNCH SPOT
-                            new ParallelAction(
-                                    //setIntake(INTAKE_VEL), // Starts intake immediately
-                                    new SequentialAction(
-                                            drive.actionBuilder(new Pose2d(-10, -10, Math.toRadians(45)))
-                                                    .strafeToLinearHeading(new Vector2d(-10, -53), Math.toRadians(-90))
-                                                    .build()
-                                            //setIntake(0) // Shuts off intake the millisecond the drive finishes
-                                    )
-                            ),
+                        // 2. Slow slide into the artifacts
+                        .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
+                        .lineToY(-49)
+                        .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
-                            // 5. SECOND LAUNCH
-                            //launchRoutine(),
+                        // 3. Final Launch alignment
+                        .strafeToLinearHeading(new Vector2d(-33, -33), Math.toRadians(45))
+                        .stopAndAdd(launchRoutine())
 
-                            // 6. DRIVE TO PICKUP 2
-                            new ParallelAction(
-                                    setIntake(INTAKE_VEL),
-                                    drive.actionBuilder(new Pose2d(-29, -30, Math.toRadians(-90)))
-                                            .strafeToLinearHeading(new Vector2d(12, -25), Math.toRadians(-90))
-                                            .build()
-                            ),
-
-                            // 7. RETURN TO LAUNCH SPOT
-                            drive.actionBuilder(new Pose2d(pickup2, Math.toRadians(-90)))
-                                    .strafeToLinearHeading(new Vector2d(-10, -10), Math.toRadians(-90))
-                                    .build()
-
-                            // 8. FINAL LAUNCH
-                            //launchRoutine()
-
-                    )
-            );
-        }
+                        // Park / Final Move
+                        .strafeTo(new Vector2d(-16, -35))
+                        .build()
+        );
     }
+}
