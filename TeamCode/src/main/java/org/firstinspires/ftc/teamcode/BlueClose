@@ -21,33 +21,33 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "RoadRunner_9Ball_Master")
-public class BlueArtifactAuto extends LinearOpMode {
+@Autonomous(name = "BlueClose")
+public class BlueClose extends LinearOpMode {
 
-  /*  public class launcher {
-        private DcMotorEx launcher;
-        public launcher(HardwareMap hardwareMap) {
-            launcher = hardwareMap.get(DcMotorEx.class, "launcher");
-            launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-    }
+    /*  public class launcher {
+          private DcMotorEx launcher;
+          public launcher(HardwareMap hardwareMap) {
+              launcher = hardwareMap.get(DcMotorEx.class, "launcher");
+              launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+          }
+      }
 
-    public class feeder {
-        private DcMotorEx feeder;
-        public feeder(HardwareMap hardwareMap){
-            feeder = hardwareMap.get(DcMotorEx.class,"feeder");
-            feeder.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
-        }
-    }
+      public class feeder {
+          private DcMotorEx feeder;
+          public feeder(HardwareMap hardwareMap){
+              feeder = hardwareMap.get(DcMotorEx.class,"feeder");
+              feeder.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+          }
+      }
 
-    public class intake {
-        private DcMotorEx intake;
-        public intake(HardwareMap hardwareMap){
-            intake = hardwareMap.get(DcMotorEx.class,"intake");
-            intake.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
-        }
-    }
-*/
+      public class intake {
+          private DcMotorEx intake;
+          public intake(HardwareMap hardwareMap){
+              intake = hardwareMap.get(DcMotorEx.class,"intake");
+              intake.setZeroPowerBehavior((DcMotor.ZeroPowerBehavior.BRAKE));
+          }
+      }
+  */
     // Initialize Subsystems
     Robot robot = new Robot();
 
