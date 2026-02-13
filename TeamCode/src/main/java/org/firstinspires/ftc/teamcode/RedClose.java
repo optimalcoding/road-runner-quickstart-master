@@ -116,11 +116,11 @@ public class RedClose extends LinearOpMode {
 
                         // --- CYCLE 2: PICKUP 1 (With Stopper) ---
                         // 1. Move quickly to the "Stopper" (2 inches away from ball)
-                        .strafeToLinearHeading(new Vector2d(-12, 20), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-9, 20), Math.toRadians(90))
 
                         // 2. Start intake and crawl the last 2 inches to the ball
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(-12, 47), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-9, 49), Math.toRadians(90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Return to Launch Spot
@@ -130,11 +130,11 @@ public class RedClose extends LinearOpMode {
 
                         // --- CYCLE 3: PICKUP 2 (With Stopper) ---
                         // 1. Approach the diagonal artifacts (The "Stopper" point)
-                        .strafeToLinearHeading(new Vector2d(12, 25), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(16, 25), Math.toRadians(90))
 
                         // 2. Slow slide into the artifacts
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(12, 47), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(14, 49), Math.toRadians(90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Final Launch alignment
