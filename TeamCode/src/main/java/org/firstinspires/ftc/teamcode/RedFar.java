@@ -52,7 +52,7 @@ public class RedFar extends LinearOpMode {
     Robot robot = new Robot();
 
     // Constants from your BlueAutoA
-    final double LAUNCHER_VEL = 1250;
+    final double LAUNCHER_VEL = 1675;
     final double FEEDER_VEL = -5000;
     final double INTAKE_VEL = -1250;
     final double TURRET_MAX = 0.6;
