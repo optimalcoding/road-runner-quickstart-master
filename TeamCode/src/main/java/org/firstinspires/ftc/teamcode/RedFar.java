@@ -68,7 +68,7 @@ public class RedFar extends LinearOpMode {
     // Optimized Launch Routine
     public Action launchRoutine() {
         return new SequentialAction(
-
+                setLauncher(LAUNCHER_VEL),
                 new SleepAction(1.2), // Wait for 6k RPM motor to stabilize
                 setFeeder(FEEDER_VEL),
                 new SleepAction(0.05),
@@ -92,7 +92,7 @@ public class RedFar extends LinearOpMode {
 
 
         // Start Pose based on your MeepMeep (-52, -53, 45 degrees)
-        Pose2d startPose = new Pose2d(60, -19, Math.toRadians(45));
+        Pose2d startPose = new Pose2d(60, -19, Math.toRadians(-15));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         waitForStart();
@@ -115,12 +115,12 @@ public class RedFar extends LinearOpMode {
 
                         // 2. Start intake and crawl the last 2 inches to the ball
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(35, -47), Math.toRadians(-90))
+                        .strafeToLinearHeading(new Vector2d(35, -52), Math.toRadians(-90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Return to Launch Spot
 
-                        .strafeToLinearHeading(new Vector2d(58, -15), Math.toRadians(30))
+                        .strafeToLinearHeading(new Vector2d(58, -15), Math.toRadians(-15))
                         .stopAndAdd(launchRoutine())
 
                         // --- Move off launch zone ---
