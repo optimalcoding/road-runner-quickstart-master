@@ -64,10 +64,12 @@ public class RedClose extends LinearOpMode {
     // Optimized Launch Routine
     public Action launchRoutine() {
         return new SequentialAction(
+                new ParallelAction(setLauncher(-100),setFeeder(-FEEDER_VEL)),
+                new SleepAction(0.1),
+                new ParallelAction(setLauncher(0),setFeeder(0)),
+                new SleepAction(0.2),
                 setLauncher(LAUNCHER_VEL),
-                new SleepAction(1.2), // Wait for 6k RPM motor to stabilize
-                setFeeder(FEEDER_VEL),
-                new SleepAction(0.05),
+                new SleepAction(1),
                 setFeeder(0),
                 new SleepAction(0.5),
                 setIntake(INTAKE_VEL),
@@ -116,16 +118,19 @@ public class RedClose extends LinearOpMode {
 
                         // --- CYCLE 2: PICKUP 1 (With Stopper) ---
                         // 1. Move quickly to the "Stopper" (2 inches away from ball)
-                        .strafeToLinearHeading(new Vector2d(-9, 20), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-13, 20), Math.toRadians(90))
 
                         // 2. Start intake and crawl the last 2 inches to the ball
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(-9, 49), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-13, 55), Math.toRadians(90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Return to Launch Spot
 
-                        .strafeToLinearHeading(new Vector2d(-33, 33), Math.toRadians(-45))
+                        .strafeToLinearHeading(new Vector2d(-30, 30), Math.toRadians(-40))
+                        .stopAndAdd(setLauncher(-100))
+                        .stopAndAdd(new SleepAction(0.4))
+
                         .stopAndAdd(launchRoutine())
 
                         // --- CYCLE 3: PICKUP 2 (With Stopper) ---
@@ -134,11 +139,15 @@ public class RedClose extends LinearOpMode {
 
                         // 2. Slow slide into the artifacts
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(14, 49), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(14, 55), Math.toRadians(90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Final Launch alignment
-                        .strafeToLinearHeading(new Vector2d(-33, 33), Math.toRadians(-45))
+                        .lineToYConstantHeading(33)
+                        .strafeToLinearHeading(new Vector2d(-30, 30), Math.toRadians(-45))
+                        .stopAndAdd(setLauncher(-100))
+                        .stopAndAdd(new SleepAction(0.4))
+
                         .stopAndAdd(launchRoutine())
 
                         // Park / Final Move
