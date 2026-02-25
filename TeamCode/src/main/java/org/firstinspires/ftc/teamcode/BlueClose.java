@@ -93,22 +93,12 @@ public class BlueClose extends LinearOpMode {
         Pose2d startPose = new Pose2d(-52, -53, Math.toRadians(45));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
-       /* TrajectoryActionBuilder move1 = drive.actionBuilder(startPose)
-                        .strafeToLinearHeading(new Vector2d(-33,-33),Math.toRadians(45));
-
-                Action trajend = move1.endTrajectory().build();
-          */
-
-
 
         waitForStart();
         if (isStopRequested()) return;
 
         Actions.runBlocking(
-                        /*move1
-                        .stopAndAdd(launchRoutine())
-                        .build()
-                        */
+
                 drive.actionBuilder(startPose)
                         // --- CYCLE 1: PRELOADS ---
 
