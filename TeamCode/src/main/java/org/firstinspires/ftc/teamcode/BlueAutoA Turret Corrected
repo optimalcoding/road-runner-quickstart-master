@@ -145,7 +145,7 @@ public class BlueClose extends LinearOpMode {
                         .strafeToLinearHeading(new Vector2d(37,-55),Math.toRadians(-90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
                         .stopAndAdd(setLauncher(150))
-                        .strafeToLinearHeading(new Vector2d(-30, -30), Math.toRadians(40))
+                        .strafeToLinearHeading(new Vector2d(-20, -17), Math.toRadians(40))
                         .stopAndAdd(launchRoutine())
 
 
