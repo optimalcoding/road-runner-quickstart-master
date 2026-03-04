@@ -39,8 +39,8 @@ public class Teleop extends LinearOpMode {
     final double STOP_SPEED = 0.0;
     final double FULL_SPEED = 1.0;
 
-    final double goalX = 138;
-    final double goalY = 138;
+    final double goalX = -60;
+    final double goalY = -60;
 
 
     @Override
@@ -180,7 +180,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("Y", "%.2f", currentPose.position.y);
             telemetry.addData("Dist to Target", "%.2f in", distance);
 
-            telemetry.addData("Distance", "%.2f in", distance);
+            //telemetry.addData("Distance", "%.2f in", distance);
             telemetry.addData("Angle to Point", "%.1f deg", Math.toDegrees(angleToPoint));
             telemetry.addData("Need to Turn", "%.1f deg", Math.toDegrees(headingError));
 
