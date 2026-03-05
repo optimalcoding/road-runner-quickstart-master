@@ -36,13 +36,13 @@ public class Teleop extends LinearOpMode {
 
 
 
-    double LAUNCHER_TARGET_VELOCITY = 1400;
+    double LAUNCHER_TARGET_VELOCITY = 1450;
 
     final double LAUNCHER_2ND = 1675;
 
     final double LAUNCHER_MIN_VELOCITY = 1400;
 
-    final double FEEDER_TARGET_VELOCITY = 5000;
+    final double FEEDER_TARGET_VELOCITY = 10000;
     final double FEEDER_MIN_VELOCITY = 750;
     final double LAUNCHER_REVERSE = -1000;
     final double FEEDER_REVERSE = 1000;
@@ -64,8 +64,6 @@ public class Teleop extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-       // telemetry.setMsTransmissionInterval(11);
-      //  limelight.pipelineSwitch(0);
 
         robot.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -73,23 +71,25 @@ public class Teleop extends LinearOpMode {
         robot.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.feeder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.aim.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.frontLeft.setZeroPowerBehavior(BRAKE);
         robot.frontRight.setZeroPowerBehavior(BRAKE);
         robot.backLeft.setZeroPowerBehavior(BRAKE);
         robot.backRight.setZeroPowerBehavior(BRAKE);
 
-
         robot.launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.launcher.setZeroPowerBehavior(BRAKE);
         robot.launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
 
 
-        // robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         waitForStart();
 
-       // limelight.start();
+       /* limelight.start();
+
+        telemetry.setMsTransmissionInterval(11);
+        limelight.pipelineSwitch(0);
+*/
 
         while (opModeIsActive()) {
 
@@ -114,7 +114,6 @@ public class Teleop extends LinearOpMode {
 
             telemetry.addData("Status", "Resetting Values");
             telemetry.update();
-
 
 
             //Powerplay controller configs for reference to centerstage indirect drive
@@ -142,7 +141,7 @@ public class Teleop extends LinearOpMode {
             robot.backRight.setPower(BackRightVal * 0.6);
 
             robot.intake.setPower(gamepad2.left_stick_y);
-            robot.aim.setPower(gamepad2.right_stick_y * 0.3);
+            robot.aim.setPower(gamepad2.right_stick_y*0.3);
 
             telemetry.update();
 
@@ -175,13 +174,13 @@ public class Teleop extends LinearOpMode {
 
             }
 
-            if (gamepad1.a){
+          /*  if (gamepad1.a){
                 LAUNCHER_TARGET_VELOCITY = LAUNCHER_2ND;
             }
             if (gamepad1.b){
                 LAUNCHER_TARGET_VELOCITY = LAUNCHER_MIN_VELOCITY;
             }
-
+*/
 
             telemetry.addData("feedmotor_speed", robot.feeder.getVelocity());
             telemetry.addData("launcher_speed", robot.launcher.getVelocity());
@@ -193,7 +192,7 @@ public class Teleop extends LinearOpMode {
 
     }
     void Reverse(int milliseconds) {
-        robot.launcher.setVelocity(LAUNCHER_REVERSE);
+        robot.launcher.setVelocity(-LAUNCHER_REVERSE);
         robot.feeder.setVelocity(FEEDER_REVERSE);
         sleep(milliseconds);
         robot.launcher.setVelocity(STOP_SPEED);
