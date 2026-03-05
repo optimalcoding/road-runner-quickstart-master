@@ -141,9 +141,8 @@ public class Teleop extends LinearOpMode {
             robot.backLeft.setPower(BackLeftVal * 0.6);
             robot.backRight.setPower(BackRightVal * 0.6);
 
-robot.aim.setPower(0.3);
             robot.intake.setPower(gamepad2.left_stick_y);
-             //robot.aim.setPower(gamepad2.right_stick_y);
+            robot.aim.setPower(gamepad2.right_stick_y * 0.3);
 
             telemetry.update();
 
