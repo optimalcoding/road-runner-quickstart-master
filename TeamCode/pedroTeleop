@@ -42,7 +42,7 @@ public class Teleop extends LinearOpMode {
 
     final double LAUNCHER_MIN_VELOCITY = 1400;
 
-    final double FEEDER_TARGET_VELOCITY = 10000;
+    final double FEEDER_TARGET_VELOCITY = 5000;
     final double FEEDER_MIN_VELOCITY = 750;
     final double LAUNCHER_REVERSE = -1000;
     final double FEEDER_REVERSE = 1000;
