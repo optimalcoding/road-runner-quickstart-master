@@ -40,12 +40,10 @@ public class Teleop extends LinearOpMode {
 
     final double FEEDER_TARGET_VELOCITY = 5000;
     final double FEEDER_MIN_VELOCITY = 750;
-    final double LAUNCHER_REVERSE = -1000;
-    final double FEEDER_REVERSE = 1000;
+    final double LAUNCHER_REVERSE = -400;
+    final double FEEDER_REVERSE = -1000;
     final double STOP_SPEED = 0.0;
     final double FULL_SPEED = 1.0;
-    ElapsedTime reverseTimer = new ElapsedTime();
-    boolean isReversing = false;
     final double goalX = 138;
     final double goalY = 138;
 
@@ -164,8 +162,8 @@ public class Teleop extends LinearOpMode {
             robot.aim.setPower(gamepad2.right_stick_y*0.3);
 
 
-
-      /*      if (gamepad2.y) {
+/*
+            if (gamepad2.y) {
                 robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
 
 
@@ -173,22 +171,27 @@ public class Teleop extends LinearOpMode {
                 robot.launcher.setVelocity(STOP_SPEED);
 
             }
-*/
-            launchSequence();
 
-        /*    if (gamepad2.dpad_down) {
+       */
 
-                robot.feeder.setVelocity(-FEEDER_TARGET_VELOCITY);
+            if (gamepad2.y) {
+                launchSequence();
             }
             else {
+                robot.launcher.setVelocity(STOP_SPEED);
                 robot.feeder.setVelocity(STOP_SPEED);
             }
 
-           /* if (gamepad2.dpad_up) {
+            if (gamepad2.x) {
+                robot.feeder.setVelocity(FEEDER_TARGET_VELOCITY);
+            }
+            else if (gamepad2.a) {
+                robot.feeder.setVelocity(STOP_SPEED);
+            }
+
+            if (gamepad2.dpad_up) {
                 Reverse(450);
             }
-*/
-
 
             if (gamepad1.dpad_up) {
                 robot.turret.setPosition(0.6);//raises hood
@@ -206,61 +209,28 @@ public class Teleop extends LinearOpMode {
                 LAUNCHER_TARGET_VELOCITY = LAUNCHER_MIN_VELOCITY;
             }
 
-
-
-
-
             telemetry.addData("feedmotor_speed", robot.feeder.getCurrentPosition());
             telemetry.addData("launcher_speed", robot.launcher.getVelocity());
             telemetry.update();
 
         }
     }
-   /* void Reverse(int milliseconds) {
+    void Reverse(int milliseconds) {
         robot.launcher.setVelocity(LAUNCHER_REVERSE);
         robot.feeder.setVelocity(FEEDER_REVERSE);
         sleep(milliseconds);
         robot.launcher.setVelocity(STOP_SPEED);
         robot.feeder.setVelocity(STOP_SPEED);
     }
-*/
-   void launchSequence() {
-       if (gamepad2.a && !gamepad2.x) {
-           // Trigger the start of the reverse phase
-           if (!isReversing && reverseTimer.milliseconds() > 500) {
-               isReversing = true;
-               reverseTimer.reset();
-           }
 
-           if (isReversing) {
-               // PHASE 1: Reversing (Clearing jams)
-               if (reverseTimer.milliseconds() < 450) {
-                   robot.launcher.setVelocity(LAUNCHER_REVERSE);
-                   robot.feeder.setVelocity(FEEDER_REVERSE);
-               } else {
-                   // Time is up, move to Phase 2
-                   isReversing = false;
-               }
-           }
-           else {
-               // PHASE 2: Launching (Spin up then feed)
-               robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-               if (robot.launcher.getVelocity() >= LAUNCHER_TARGET_VELOCITY * 0.95) {
-                   robot.feeder.setVelocity(-FEEDER_TARGET_VELOCITY);
-               } else {
-                   // Keep feeder off while wheels are still getting up to speed
-                   robot.feeder.setVelocity(STOP_SPEED);
-               }
-           }
-       }
-       else {
-           // RESET: Button released
-           isReversing = false;
-           // Important: Stop motors so they don't run forever
-           if (!gamepad2.x) { // Only stop if we aren't using the manual 'X' override
-               robot.launcher.setVelocity(STOP_SPEED);
-               robot.feeder.setVelocity(STOP_SPEED); // Changed from -FEEDER_TARGET_VELOCITY
-           }
-       }
-   }
+    void launchSequence() {
+
+        robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+        // Only feed if wheels are at 95% speed
+        if (robot.launcher.getVelocity() >= (LAUNCHER_TARGET_VELOCITY * 0.95)) {
+            robot.feeder.setVelocity(FEEDER_TARGET_VELOCITY);
+        } else {
+            robot.feeder.setVelocity(0);
+        }
+    }
 }
