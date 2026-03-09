@@ -163,24 +163,14 @@ public class Teleop extends LinearOpMode {
             robot.aim.setPower(gamepad2.right_stick_y*0.3);
 
 
-/*
+
             if (gamepad2.y) {
-                robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+                robot.launcher.setVelocity(-LAUNCHER_TARGET_VELOCITY);
 
 
             } else if (gamepad2.b) { // stop flywheel
                 robot.launcher.setVelocity(STOP_SPEED);
 
-            }
-
-       */
-
-            if (gamepad2.y) {
-                launchSequence();
-            }
-            else {
-                robot.launcher.setVelocity(STOP_SPEED);
-                robot.feeder.setVelocity(STOP_SPEED);
             }
 
             if (gamepad2.x) {
@@ -193,8 +183,6 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.dpad_up) {
                 Reverse(450);
             }
-
-            // --- REVERSE LOGIC (Non-Blocking) ---
 
 
             if (gamepad1.dpad_up) {
@@ -229,10 +217,12 @@ public class Teleop extends LinearOpMode {
 
     void launchSequence() {
 
-        robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+        robot.launcher.setVelocity(-LAUNCHER_TARGET_VELOCITY);
         // Only feed if wheels are at 95% speed
-        if (robot.launcher.getVelocity() >= (LAUNCHER_TARGET_VELOCITY * 0.95)) {
+        if (robot.launcher.getVelocity() >= (-LAUNCHER_TARGET_VELOCITY * 0.95)) {
+
             robot.feeder.setVelocity(FEEDER_TARGET_VELOCITY);
+
         } else {
             robot.feeder.setVelocity(0);
         }
