@@ -47,9 +47,6 @@ public class Teleop extends LinearOpMode {
     final double goalX = 138;
     final double goalY = 138;
 
-    private ElapsedTime reverseTimer = new ElapsedTime();
-    private boolean isReversing = false;
-    private final double REVERSE_DURATION = 0.450; // 450 milliseconds
 
 
 
@@ -193,28 +190,12 @@ public class Teleop extends LinearOpMode {
                 robot.feeder.setVelocity(STOP_SPEED);
             }
 
-        /*    if (gamepad2.dpad_up) {
+            if (gamepad2.dpad_up) {
                 Reverse(450);
             }
-*/
-            // --- REVERSE LOGIC (Non-Blocking) ---
-            if (gamepad2.dpad_up && !isReversing) {
-                isReversing = true;
-                reverseTimer.reset();
-            }
 
-            if (isReversing) {
-                if (reverseTimer.seconds() < REVERSE_DURATION) {
-                    // We are currently in the 450ms window
-                    robot.launcher.setVelocity(LAUNCHER_REVERSE);
-                    robot.feeder.setVelocity(FEEDER_REVERSE);
-                } else {
-                    // Time is up! Stop and reset
-                    robot.launcher.setVelocity(STOP_SPEED);
-                    robot.feeder.setVelocity(STOP_SPEED);
-                    isReversing = false;
-                }
-            }
+            // --- REVERSE LOGIC (Non-Blocking) ---
+
 
             if (gamepad1.dpad_up) {
                 robot.turret.setPosition(0.6);//raises hood
