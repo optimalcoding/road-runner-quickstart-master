@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.pedroPathing;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
 public class Robot {
 
@@ -26,6 +28,8 @@ public class Robot {
     public DcMotorEx aim;
     // Class-level declaration
     public HuskyLens huskyLens;
+    public Limelight3A limelight;
+    public GoBildaPinpointDriver pinpoint;
 
 
 
@@ -61,6 +65,8 @@ public class Robot {
         intake = hwMap.get(DcMotorEx.class, "intake");
         turret = hwMap.get(Servo.class, "turret");
         aim = hwMap.get(DcMotorEx.class, "aim");
+        limelight = hwMap.get(Limelight3A.class, "limelight");
+        pinpoint = hwMap.get(GoBildaPinpointDriver.class, "pinpoint");
         // In your OpMode's init() or before the run loop:
         // huskyLens = hwMap.get(HuskyLens.class, "huskylens");
 
