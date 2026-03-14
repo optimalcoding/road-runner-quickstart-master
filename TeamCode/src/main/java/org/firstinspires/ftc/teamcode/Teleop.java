@@ -2,10 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.acmerobotics.roadrunner.Pose2d;
+
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 import java.util.Arrays;
 
@@ -35,6 +39,8 @@ public class Teleop extends LinearOpMode {
     final double STOP_SPEED = 0.0;
     final double FULL_SPEED = 1.0;
 
+    //final double goalX = 138;
+    //final double goalY = 138;
 
 
     @Override
@@ -68,7 +74,7 @@ public class Teleop extends LinearOpMode {
         robot.launcher.setZeroPowerBehavior(BRAKE);
         robot.launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
 
-
+       // MecanumDrive drive = new MecanumDrive(hardwareMap, PoseStorage.currentPose);
         // robot.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
@@ -85,8 +91,20 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("BR Count", robot.backRight.getCurrentPosition());
 
             telemetry.addData("Status", "Resetting Values");
-            telemetry.update();
 
+          /*  drive.updatePoseEstimate();
+            Pose2d currentPose = drive.localizer.getPose();
+
+            double dx = goalX - currentPose.position.x;
+            double dy = goalY - currentPose.position.y;
+            double distance = Math.hypot(dx, dy);
+
+            double angleToPoint = Math.atan2(dy, dx);
+            double currentHeading = currentPose.heading.toDouble();
+            double headingError = angleToPoint - currentHeading;
+
+            telemetry.update();
+*/
 
 
             //Powerplay controller configs for reference to centerstage indirect drive
@@ -116,22 +134,7 @@ public class Teleop extends LinearOpMode {
             // robot.launcher.setPower(gamepad2.right_stick_y);
 
 
-
-
-            // telemetry.addData("frontLeft", FrontLeftVal); // Note: driver hub shows this and the count version but idk why nor what it is
-            // telemetry.addData("frontRight", FrontRightVal);
-            // telemetry.addData("backLeft", BackLeftVal);
-            // telemetry.addData("backRight", BackRightVal);
-
             telemetry.update();
-            // set power to wheel motors
-            //robot.frontLeft.setPower(FrontLeftVal);
-            //robot.frontRight.setPower(FrontRightVal);
-            //robot.backLeft.setPower(BackLeftVal);
-            //robot.backRight.setPower(BackRightVal);
-
-
-
 
             if (gamepad2.y) {
                 robot.launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
@@ -170,8 +173,17 @@ public class Teleop extends LinearOpMode {
             }
 
 
-            telemetry.addData("feedmotor_speed", robot.feeder.getCurrentPosition());
+            telemetry.addData("feedmotor_speed", robot.feeder.getVelocity());
             telemetry.addData("launcher_speed", robot.launcher.getVelocity());
+
+         /*   telemetry.addData("X", "%.2f", currentPose.position.x);
+            telemetry.addData("Y", "%.2f", currentPose.position.y);
+            telemetry.addData("Dist to Target", "%.2f in", distance);
+
+            telemetry.addData("Distance", "%.2f in", distance);
+            telemetry.addData("Angle to Point", "%.1f deg", Math.toDegrees(angleToPoint));
+            telemetry.addData("Need to Turn", "%.1f deg", Math.toDegrees(headingError));
+*/
 
         }
 
