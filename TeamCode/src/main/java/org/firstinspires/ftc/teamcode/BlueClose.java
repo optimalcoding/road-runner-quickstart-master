@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "BlueClose")
+@Autonomous(name = "BlueClose",group = "Autonomous")
 public class BlueClose extends LinearOpMode {
 
     /*  public class launcher {
@@ -97,55 +97,75 @@ public class BlueClose extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
-        Actions.runBlocking(
+        try {
+            Actions.runBlocking(
 
-                drive.actionBuilder(startPose)
-                        // --- CYCLE 1: PRELOADS ---
+                    drive.actionBuilder(startPose)
+                            // --- CYCLE 1: PRELOADS ---
 
-                        .strafeTo(new Vector2d(-33, -33))
-
-
-                        .stopAndAdd(launchRoutine())
-
-                        // --- CYCLE 2: PICKUP 1 (With Stopper) ---
-                        // 1. Move quickly to the "Stopper" (2 inches away from ball)
-                        .strafeToLinearHeading(new Vector2d(-12, -12), Math.toRadians(-90))
-
-                        // 2. Start intake and crawl the last 2 inches to the ball
-                        .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(-12, -52), Math.toRadians(-90))
-                        .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
-
-                        // 3. Return to Launch Spot
-
-                        .strafeToLinearHeading(new Vector2d(-30, -30), Math.toRadians(40))
-                        .stopAndAdd(setLauncher(-150))
-                        .stopAndAdd(new SleepAction(0.1))
-
-                        .stopAndAdd(launchRoutine())
-
-                        // --- CYCLE 3: PICKUP 2 (With Stopper) ---
-                        // 1. Approach the diagonal artifacts (The "Stopper" point)
-                        .strafeToLinearHeading(new Vector2d(13, -18), Math.toRadians(-90))
-
-                        // 2. Slow slide into the artifacts
-                        .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(13, -55), Math.toRadians(-90))
-                        .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
-                        .stopAndAdd(new SleepAction(0.01))
-
-                        // 3. Final Launch alignment
-                        .lineToYConstantHeading(-33)
-                        .strafeToLinearHeading(new Vector2d(-30, -30), Math.toRadians(40))
-                        .stopAndAdd(setLauncher(-150))
-                        .stopAndAdd(new SleepAction(0.1))
-                        .stopAndAdd(launchRoutine())
-
-                        // Park / Final Move
-                        .strafeToLinearHeading(new Vector2d(-16, -37), Math.toRadians(45))
-                        .build()
+                            .strafeTo(new Vector2d(-33, -33))
 
 
-        );
+                            .stopAndAdd(launchRoutine())
+
+                            // --- CYCLE 2: PICKUP 1 (With Stopper) ---
+                            // 1. Move quickly to the "Stopper" (2 inches away from ball)
+                            .strafeToLinearHeading(new Vector2d(-12, -12), Math.toRadians(-90))
+
+                            // 2. Start intake and crawl the last 2 inches to the ball
+                            .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
+                            .strafeToLinearHeading(new Vector2d(-12, -52), Math.toRadians(-90))
+                            .stopAndAdd(new ParallelAction(setFeeder(0), setIntake(0)))
+
+                            // 3. Return to Launch Spot
+
+                            .strafeToLinearHeading(new Vector2d(-30, -30), Math.toRadians(40))
+                            .stopAndAdd(setLauncher(-150))
+                            .stopAndAdd(new SleepAction(0.1))
+
+                            .stopAndAdd(launchRoutine())
+
+                            // --- CYCLE 3: PICKUP 2 (With Stopper) ---
+                            // 1. Approach the diagonal artifacts (The "Stopper" point)
+                            .strafeToLinearHeading(new Vector2d(13, -18), Math.toRadians(-90))
+
+                            // 2. Slow slide into the artifacts
+                            .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
+                            .strafeToLinearHeading(new Vector2d(13, -55), Math.toRadians(-90))
+                            .stopAndAdd(new ParallelAction(setFeeder(0), setIntake(0)))
+                            .stopAndAdd(new SleepAction(0.01))
+
+                            // 3. Final Launch alignment
+                            .lineToYConstantHeading(-33)
+                            .strafeToLinearHeading(new Vector2d(-30, -30), Math.toRadians(40))
+                            .stopAndAdd(setLauncher(-150))
+                            .stopAndAdd(new SleepAction(0.1))
+                            .stopAndAdd(launchRoutine())
+
+                            .strafeToLinearHeading(new Vector2d(34,-20),Math.toRadians(-90))
+                            .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
+                            .strafeToLinearHeading(new Vector2d(34,-55),Math.toRadians(-90))
+                            .stopAndAdd(new ParallelAction(setFeeder(0), setIntake(0)))
+
+
+                            .strafeToLinearHeading(new Vector2d(-30, -30), Math.toRadians(40))
+                            .stopAndAdd(setLauncher(-150))
+                            .stopAndAdd(new SleepAction(0.1))
+                            .stopAndAdd(launchRoutine())
+
+
+
+
+                            // Park / Final Move
+                            .strafeToLinearHeading(new Vector2d(-16, -37), Math.toRadians(45))
+                            .build()
+
+
+            );
+        } finally {
+                PoseStorage.currentPose = drive.localizer.getPose();
+                telemetry.addData("Auto Status", "Complete. Pose Saved.");
+                telemetry.update();
+            }
     }
 }
