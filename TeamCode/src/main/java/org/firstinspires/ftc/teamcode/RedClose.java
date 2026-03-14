@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "RedClose")
+@Autonomous(name = "RedClose",group = "Autonomous")
 public class RedClose extends LinearOpMode {
 
     /*  public class launcher {
@@ -149,6 +149,19 @@ public class RedClose extends LinearOpMode {
                         .stopAndAdd(new SleepAction(0.4))
 
                         .stopAndAdd(launchRoutine())
+
+                        .strafeToLinearHeading(new Vector2d(34,20),Math.toRadians(-90))
+                        .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
+                        .strafeToLinearHeading(new Vector2d(34,55),Math.toRadians(-90))
+                        .stopAndAdd(new ParallelAction(setFeeder(0), setIntake(0)))
+
+
+                        .strafeToLinearHeading(new Vector2d(-30, 30), Math.toRadians(-40))
+                        .stopAndAdd(setLauncher(-150))
+                        .stopAndAdd(new SleepAction(0.1))
+                        .stopAndAdd(launchRoutine())
+
+
 
                         // Park / Final Move
                         .strafeToLinearHeading(new Vector2d(-16, 37), Math.toRadians(-45))
