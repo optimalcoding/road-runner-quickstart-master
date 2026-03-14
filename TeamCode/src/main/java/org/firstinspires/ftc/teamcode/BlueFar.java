@@ -2,26 +2,19 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
-import com.acmerobotics.roadrunner.PathBuilder;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 
 @Config
-@Autonomous(name = "BlueFar")
+@Autonomous(name = "BlueFar",group = "Autonomous")
 public class BlueFar extends LinearOpMode {
 
     /*  public class launcher {
@@ -64,6 +57,7 @@ public class BlueFar extends LinearOpMode {
     public Action setIntake(double vel) { return packet -> { robot.intake.setVelocity(vel); return false; }; }
     public Action setTurret(double vel) { return packet -> { robot.turret.setPosition(vel); return false; }; }
 
+
     // Optimized Launch Routine
     public Action launchRoutine() {
         return new SequentialAction(
@@ -93,18 +87,11 @@ public class BlueFar extends LinearOpMode {
 
 
         // Start Pose based on your MeepMeep (-52, -53, 45 degrees)
-        Pose2d startPose = new Pose2d(62, 19, Math.toRadians(15));
+        Pose2d startPose = new Pose2d(60, -19, Math.toRadians(15));
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
-       /* TrajectoryActionBuilder move1 = drive.actionBuilder(startPose)
-                        .strafeToLinearHeading(new Vector2d(-33,-33),Math.toRadians(45));
-
-                Action trajend = move1.endTrajectory().build();
-          */
-
-
-
         waitForStart();
+
         if (isStopRequested()) return;
 
         Actions.runBlocking(
@@ -119,27 +106,25 @@ public class BlueFar extends LinearOpMode {
 
                         // --- CYCLE 2: PICKUP 1 (With Stopper) ---
                         // 1. Move quickly to the "Stopper" (2 inches away from ball)
-                        .strafeToLinearHeading(new Vector2d(29, 12), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(29, -12), Math.toRadians(-90))
 
                         // 2. Start intake and crawl the last 2 inches to the ball
                         .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(29, 55), Math.toRadians(90))
-
+                        .strafeToLinearHeading(new Vector2d(29, -55), Math.toRadians(-90))
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
 
                         // 3. Return to Launch Spot
-                        .lineToYConstantHeading(33)
-                        .strafeToLinearHeading(new Vector2d(58, 19), Math.toRadians(15))
+                        .lineToYConstantHeading(-33)
+                        .strafeToLinearHeading(new Vector2d(58, -19), Math.toRadians(15))
                         .stopAndAdd(setLauncher(-150))
                         .stopAndAdd(new SleepAction(0.1))
 
                         .stopAndAdd(launchRoutine())
 
-                        // --- CYCLE 3: PICKUP 2 (With Stopper) ---
-                        // 1. Approach the diagonal artifacts (The "Stopper" point)
-                        .strafeToLinearHeading(new Vector2d(38, 15), Math.toRadians(45))
-                        .stopAndAdd(setTurret(TURRET_MIN))
+                        // --- Move off launch zone ---
 
+                        .strafeToLinearHeading(new Vector2d(38, -15), Math.toRadians(15))
+                        .stopAndAdd(setTurret(TURRET_MIN))
 
                         .build()
 
