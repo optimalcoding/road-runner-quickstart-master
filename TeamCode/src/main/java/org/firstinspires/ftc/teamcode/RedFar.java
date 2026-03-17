@@ -45,9 +45,9 @@ public class RedFar extends LinearOpMode {
     Robot robot = new Robot();
 
     // Constants from your BlueAutoA
-    final double LAUNCHER_VEL = 1675;
-    final double FEEDER_VEL = -5000;
-    final double INTAKE_VEL = -1250;
+    final double LAUNCHER_VEL = -1675;
+    final double FEEDER_VEL = 5000;
+    final double INTAKE_VEL = 1250;
     final double TURRET_MAX = 0.6;
     final double TURRET_MIN = 0.2;
 
@@ -62,9 +62,9 @@ public class RedFar extends LinearOpMode {
         return new SequentialAction(
                 setLauncher(LAUNCHER_VEL),
                 new SleepAction(1),
-                setIntake(INTAKE_VEL),
+                setIntake(-INTAKE_VEL),
                 new SleepAction(0.2),
-                setFeeder(FEEDER_VEL),
+                setFeeder(-FEEDER_VEL),
                 new SleepAction(1.8),
                 new ParallelAction(setLauncher(0), setIntake(0), setFeeder(0))
         );
@@ -72,8 +72,8 @@ public class RedFar extends LinearOpMode {
 
     public Action captureBalls() {
         return new SequentialAction(
-                new ParallelAction(setLauncher(-LAUNCHER_VEL), setFeeder(-FEEDER_VEL)), // Reverse briefly
-                new SleepAction(0.2),
+                new ParallelAction(setLauncher(-LAUNCHER_VEL), setFeeder(FEEDER_VEL)), // Reverse briefly
+                new SleepAction(0.4),
                 new ParallelAction(setLauncher(0), setFeeder(0))      // Then stop
         );
     }
@@ -114,18 +114,18 @@ public class RedFar extends LinearOpMode {
 
                         // --- CYCLE 2: PICKUP 1 (With Stopper) ---
                         // 1. Move quickly to the "Stopper" (2 inches away from ball)
-                        .strafeToLinearHeading(new Vector2d(29, 12), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(34, 15), Math.toRadians(90))
 
                         // 2. Start intake and crawl the last 2 inches to the ball
-                        .afterTime(0, new ParallelAction(setFeeder(FEEDER_VEL), setIntake(INTAKE_VEL)))
-                        .strafeToLinearHeading(new Vector2d(29, 55), Math.toRadians(90))
+                        .afterTime(0, new ParallelAction(setFeeder(-FEEDER_VEL), setIntake(-INTAKE_VEL)))
+                        .strafeToLinearHeading(new Vector2d(29, 62), Math.toRadians(90))
 
                         .stopAndAdd(new ParallelAction(setFeeder(0),setIntake(0)))
                         .stopAndAdd(captureBalls())
 
                         // 3. Return to Launch Spot
                         .lineToYConstantHeading(33)
-                        .strafeToLinearHeading(new Vector2d(58, 19), Math.toRadians(-15))
+                        .strafeToLinearHeading(new Vector2d(58, 19), Math.toRadians(-20))
 
                         .stopAndAdd(new SleepAction(0.1))
 
